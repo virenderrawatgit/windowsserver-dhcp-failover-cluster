@@ -1,0 +1,221 @@
+# 🚀 DHCP Failover Multi-Site Lab (cloud.local)
+
+## 📌 Overview
+
+This project demonstrates a **multi-site DHCP Failover configuration** using Windows Server and PowerShell.
+
+The setup includes:
+
+* 🏢 Delhi (Primary Site)
+* 🌆 Mumbai (Secondary Site)
+* 🏔️ Uttarakhand (Secondary Site)
+
+DHCP Failover is configured in **Hot Standby mode** to ensure high availability.
+
+---
+
+## 🏗️ Architecture
+
+### 🔁 Failover Relationships
+
+* Delhi ↔ Mumbai (Failover Pair 1)
+* Delhi ↔ Uttarakhand (Failover Pair 2)
+
+---
+
+## 🖥️ Server Details
+
+| Site        | Server Name | IP Address   | Role      |
+| ----------- | ----------- | ------------ | --------- |
+| Delhi       | DEL-DHCP01  | 10.10.0.10   | Primary   |
+| Mumbai      | MUM-DHCP01  | 172.168.0.10 | Secondary |
+| Uttarakhand | UKD-DHCP01  | 192.168.0.10 | Secondary |
+
+---
+
+## ⚙️ Configuration Steps
+
+---
+
+### 🔧 STEP 1 – Install DHCP Role (Run on ALL Servers)
+
+```powershell
+Install-WindowsFeature -Name DHCP -IncludeManagementTools
+
+# Authorize DHCP in Active Directory
+Add-DhcpServerInDC -DnsName $env:COMPUTERNAME `
+-IPAddress (Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.InterfaceAlias -notlike "*Loopback*"}).IPAddress
+```
+
+---
+
+### 🔧 STEP 2 – Create Delhi Scope (Run on DEL-DHCP01)
+
+```powershell
+Add-DhcpServerv4Scope `
+-Name "Delhi-Scope" `
+-StartRange 10.10.0.100 `
+-EndRange 10.10.255.200 `
+-SubnetMask 255.255.0.0 `
+-State Active
+
+Set-DhcpServerv4OptionValue `
+-ScopeId 10.10.0.0 `
+-Router 10.10.0.1 `
+-DnsServer 10.10.0.5 `
+-DnsDomain "cloud.local"
+```
+
+---
+
+### 🔧 STEP 3 – Create Mumbai Scope
+
+```powershell
+Add-DhcpServerv4Scope `
+-Name "Mumbai-Scope" `
+-StartRange 172.168.0.100 `
+-EndRange 172.168.255.200 `
+-SubnetMask 255.255.0.0 `
+-State Active
+
+Set-DhcpServerv4OptionValue `
+-ScopeId 172.168.0.0 `
+-Router 172.168.0.1 `
+-DnsServer 10.10.0.5 `
+-DnsDomain "cloud.local"
+```
+
+---
+
+### 🔧 STEP 4 – Create Uttarakhand Scope
+
+```powershell
+Add-DhcpServerv4Scope `
+-Name "UKD-Scope" `
+-StartRange 192.168.0.50 `
+-EndRange 192.168.0.200 `
+-SubnetMask 255.255.255.0 `
+-State Active
+
+Set-DhcpServerv4OptionValue `
+-ScopeId 192.168.0.0 `
+-Router 192.168.0.1 `
+-DnsServer 10.10.0.5 `
+-DnsDomain "cloud.local"
+```
+
+---
+
+### 🔧 STEP 5 – Configure Failover (Delhi ↔ Mumbai)
+
+```powershell
+Add-DhcpServerv4Failover `
+-Name "Delhi-Mumbai-FO" `
+-PartnerServer "MUM-DHCP01.cloud.local" `
+-ScopeId 172.168.0.0 `
+-SharedSecret "P@ssw0rd123" `
+-Mode HotStandby `
+-ReservePercent 10 `
+-MaxClientLeadTime 01:00:00 `
+-AutoStateTransition $true `
+-StateSwitchInterval 00:30:00
+```
+
+---
+
+### 🔧 STEP 6 – Configure Failover (Delhi ↔ Uttarakhand)
+
+```powershell
+Add-DhcpServerv4Failover `
+-Name "Delhi-UKD-FO" `
+-PartnerServer "UKD-DHCP01.cloud.local" `
+-ScopeId 192.168.0.0 `
+-SharedSecret "P@ssw0rd123" `
+-Mode HotStandby `
+-ReservePercent 10 `
+-MaxClientLeadTime 01:00:00 `
+-AutoStateTransition $true `
+-StateSwitchInterval 00:30:00
+```
+
+---
+
+## 🔍 Verification Commands
+
+```powershell
+# Check scopes
+Get-DhcpServerv4Scope
+
+# Check failover status
+Get-DhcpServerv4Failover
+
+# Check statistics
+Get-DhcpServerv4ScopeStatistics
+
+# Check leases
+Get-DhcpServerv4Lease -ScopeId 172.168.0.0
+```
+
+---
+
+## 🧪 Testing Scenarios
+
+### ✅ Test 1 – Normal Operation
+
+* Client in Mumbai should receive IP from **Delhi**
+
+```powershell
+ipconfig /all
+```
+
+---
+
+### ❌ Test 2 – Simulate Failure
+
+```powershell
+Stop-Service DHCPServer
+```
+
+Expected Result:
+
+* Mumbai → MUM-DHCP01
+* Uttarakhand → UKD-DHCP01
+
+---
+
+### 🔁 Test 3 – Recovery
+
+```powershell
+Start-Service DHCPServer
+Get-DhcpServerv4Failover
+```
+
+---
+
+## ⚠️ Important Notes
+
+* DHCP Failover supports only **2 servers per relationship**
+* Ensure **DHCP Relay (IP Helper)** is configured on routers
+* All servers must be **domain joined**
+
+---
+
+## 🛠️ Technologies Used
+
+* Windows Server 2019 / 2022
+* Active Directory (AD DS)
+* DHCP Server
+* PowerShell
+
+---
+
+## 👨‍💻 Author
+
+**Virender Singh Rawat**
+Windows Administrator | Azure Enthusiast
+
+---
+
+## ⭐ Support
+
+If you found this project useful, please ⭐ the repository!

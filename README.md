@@ -132,15 +132,6 @@ All configurations are automated using PowerShell:
 
 ---
 
-## 🚀 Future Enhancements
-
-* 🔹 DHCP Audit Logging
-* 🔹 DNS Dynamic Updates Integration
-* 🔹 Wireshark Packet Analysis (DORA Process)
-* 🔹 Azure Hybrid DHCP Integration
-* 🔹 Infrastructure as Code (DSC / Terraform)
-
----
 
 ## 👨‍💻 Author
 
@@ -149,6 +140,3 @@ Cloud Architect
 
 ---
 
-## ⭐ If you like this project
-
-Give it a ⭐ on GitHub and feel free to fork & improve!

@@ -1,12 +1,10 @@
 ## 🖥️ Server Details
 
 | Site        | Server Name | IP Address   | Role      |
-| ----------- | ----------- | ------------ | --------- |
-| Delhi       | DEL-DHCP01  | 10.10.0.10   | Primary   |
-| Mumbai      | MUM-DHCP01  | 172.168.0.10 | Secondary |
-| Uttarakhand | UKD-DHCP01  | 192.168.0.10 | Secondary |
-
----
+|-------------|------------|--------------|-----------|
+| Delhi       | DEL-DHCP01 | 10.10.0.10   | Primary   |
+| Mumbai      | MUM-DHCP01 | 172.168.0.10 | Secondary |
+| Uttarakhand | UKD-DHCP01 | 192.168.0.10 | Secondary |
 
 ## ⚙️ Configuration Steps
 

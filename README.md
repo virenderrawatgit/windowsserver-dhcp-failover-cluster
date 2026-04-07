@@ -17,7 +17,7 @@ The goal is to ensure **high availability of IP address allocation** using DHCP 
 ---
 ## 🏗️ Architecture Diagram
 
-![DHCP Architecture](images/dhcp.png)
+![DHCP Architecture](dhcp.png)
 
 ## 🏗️ Architecture Design
 

@@ -133,10 +133,3 @@ All configurations are automated using PowerShell:
 ---
 
 
-## 👨‍💻 Author
-
-**Virender Singh Rawat**
-Cloud Architect
-
----
-

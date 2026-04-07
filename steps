@@ -1,28 +1,3 @@
-# 🚀 DHCP Failover Multi-Site Lab (cloud.local)
-
-## 📌 Overview
-
-This project demonstrates a **multi-site DHCP Failover configuration** using Windows Server and PowerShell.
-
-The setup includes:
-
-* 🏢 Delhi (Primary Site)
-* 🌆 Mumbai (Secondary Site)
-* 🏔️ Uttarakhand (Secondary Site)
-
-DHCP Failover is configured in **Hot Standby mode** to ensure high availability.
-
----
-
-## 🏗️ Architecture
-
-### 🔁 Failover Relationships
-
-* Delhi ↔ Mumbai (Failover Pair 1)
-* Delhi ↔ Uttarakhand (Failover Pair 2)
-
----
-
 ## 🖥️ Server Details
 
 | Site        | Server Name | IP Address   | Role      |

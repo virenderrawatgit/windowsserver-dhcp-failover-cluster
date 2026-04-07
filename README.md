@@ -15,6 +15,9 @@ The infrastructure simulates:
 The goal is to ensure **high availability of IP address allocation** using DHCP Failover in **Hot Standby mode**.
 
 ---
+## 🏗️ Architecture Diagram
+
+![DHCP Architecture](images/dhcp.png)
 
 ## 🏗️ Architecture Design
 
